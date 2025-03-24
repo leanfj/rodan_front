@@ -2,6 +2,7 @@ import Cookies from 'js-cookie'
 import { create } from 'zustand'
 
 const ACCESS_TOKEN = 'thisisjustarandomstring'
+const USER_KEY = 'auth:user'
 
 interface AuthUser {
   accountNo: string
@@ -22,13 +23,21 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>()((set) => {
+  const savedUser = localStorage.getItem(USER_KEY)
   const cookieState = Cookies.get(ACCESS_TOKEN)
   const initToken = cookieState ? JSON.parse(cookieState) : ''
   return {
     auth: {
-      user: null,
+      user: savedUser ? JSON.parse(savedUser) : null,
       setUser: (user) =>
-        set((state) => ({ ...state, auth: { ...state.auth, user } })),
+        set((state) => {
+          if (user) {
+            localStorage.setItem(USER_KEY, JSON.stringify(user)) // Salva no localStorage
+          } else {
+            localStorage.removeItem(USER_KEY) // Remove do localStorage
+          }
+          return { ...state, auth: { ...state.auth, user } }
+        }),
       accessToken: initToken,
       setAccessToken: (accessToken) =>
         set((state) => {
@@ -52,4 +61,4 @@ export const useAuthStore = create<AuthState>()((set) => {
   }
 })
 
-export const useAuth = () => useAuthStore((state) => state.auth)
+// export const useAuth = () => useAuthStore((state) => state.auth)

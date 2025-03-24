@@ -7,7 +7,7 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
-import { useAuthStore, useAuth } from '@/stores/authStore'
+import { useAuthStore } from '@/stores/authStore'
 import { handleServerError } from '@/utils/handle-server-error'
 import { toast } from '@/hooks/use-toast'
 import { FontProvider } from './context/font-context'
@@ -79,8 +79,8 @@ const queryClient = new QueryClient({
 // Create a new router instance
 const router = createRouter({
   routeTree,
-  context: { queryClient, auth: undefined! },
-  defaultPreload: 'intent',
+  context: { queryClient, authStore: undefined! },
+  defaultPreload: false,
   defaultPreloadStaleTime: 0,
 })
 
@@ -92,8 +92,9 @@ declare module '@tanstack/react-router' {
 }
 
 function InnerApp() {
-  const auth = useAuth()
-  return <RouterProvider router={router} context={ {auth} } />
+  return (
+    <RouterProvider router={router} context={{ authStore: useAuthStore }} />
+  )
 }
 
 // Render the app

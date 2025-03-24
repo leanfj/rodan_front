@@ -9,12 +9,15 @@ import SkipToMain from '@/components/skip-to-main'
 export const Route = createFileRoute('/_authenticated')({
   component: RouteComponent,
   beforeLoad: ({ context, location }) => {
-    if (!context.auth.user) {
+    const user = context.authStore.getState().auth.user
+    // eslint-disable-next-line no-console
+    console.log('user', user)
+    if (!user) {
       throw redirect({
         to: '/sign-in',
         search: {
           from: location.pathname,
-        }
+        },
       })
     }
   },

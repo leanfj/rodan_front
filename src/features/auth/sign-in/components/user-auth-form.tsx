@@ -3,9 +3,9 @@ import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useLocation, useNavigate } from '@tanstack/react-router'
-import { IconBrandFacebook, IconBrandGithub } from '@tabler/icons-react'
-import { useAuth } from '@/stores/authStore'
+import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
+import { signIn } from '@/context/AuthProvider/utils'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -18,7 +18,10 @@ import {
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/password-input'
 
-type UserAuthFormProps = HTMLAttributes<HTMLDivElement>
+type UserAuthFormProps = {
+  className?: string
+  onAuthError?: (error: string) => void
+} & HTMLAttributes<HTMLDivElement>
 
 const formSchema = z.object({
   email: z
@@ -35,16 +38,17 @@ const formSchema = z.object({
     }),
 })
 
-export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
+export function UserAuthForm({
+  onAuthError,
+  className,
+  ...props
+}: UserAuthFormProps) {
   const [isLoading, setIsLoading] = useState(false)
-
-  const { setUser } = useAuth()
-
 
   const navigate = useNavigate()
   const location = useLocation() as { search: { from: string } }
   const from = location.search.from || '/'
-  
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -53,31 +57,47 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     },
   })
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    setIsLoading(true)
-    // eslint-disable-next-line no-console
-    console.log(data)
-    // eslint-disable-next-line no-console    
-    console.log(from)
+  const setUser = useAuthStore((state) => state.auth.setUser)
 
-    // TODO: Fazer metodo de login
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    try {
+      setIsLoading(true)
+      const response = await signIn(data.email, data.password)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const payload = { token: response.token }
+      setUser({
+        accountNo: '1',
+        email: 'email@email.com',
+        exp: Math.round(Date.now() / 1000) + 40 * 60,
+        role: ['admin'],
+      })
 
-    //setUSer
-    setUser({
-      accountNo: '1',
-      email: 'email@email.com',
-      exp: Math.round(Date.now() / 1000) + 40 * 60,
-      role: ['admin'],
-    })
+      navigate({
+        to: from,
+        replace: true,
+      })
 
-    navigate({
-      to: from,
-      replace: true,
-    })
+      setTimeout(() => {
+        setIsLoading(false)
+      }, 3000)
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error)
 
-    setTimeout(() => {
       setIsLoading(false)
-    }, 3000)
+
+      onAuthError?.('Invalid email or password')
+
+      form.setError('email', {
+        type: 'manual',
+        message: 'Invalid email or password',
+      })
+
+      form.setError('password', {
+        type: 'manual',
+        message: 'Invalid email or password',
+      })
+    }
   }
 
   return (
@@ -123,7 +143,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               Login
             </Button>
 
-            <div className='relative my-2'>
+            {/* <div className='relative my-2'>
               <div className='absolute inset-0 flex items-center'>
                 <span className='w-full border-t' />
               </div>
@@ -132,9 +152,9 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                   Or continue with
                 </span>
               </div>
-            </div>
+            </div> */}
 
-            <div className='flex items-center gap-2'>
+            {/* <div className='flex items-center gap-2'>
               <Button
                 variant='outline'
                 className='w-full'
@@ -151,7 +171,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               >
                 <IconBrandFacebook className='h-4 w-4' /> Facebook
               </Button>
-            </div>
+            </div> */}
           </div>
         </form>
       </Form>
