@@ -8,10 +8,13 @@ import {
 } from '@tanstack/react-query'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { useAuthStore } from '@/stores/authStore'
+import { cn } from '@/lib/utils'
 import { handleServerError } from '@/utils/handle-server-error'
 import { toast } from '@/hooks/use-toast'
 import { FontProvider } from './context/font-context'
+import { LoadingProvider, useLoading } from './context/loading-context'
 import { ThemeProvider } from './context/theme-context'
+import './i18n'
 import './index.css'
 // Generated Routes
 import { routeTree } from './routeTree.gen'
@@ -93,7 +96,9 @@ declare module '@tanstack/react-router' {
 
 function InnerApp() {
   return (
-    <RouterProvider router={router} context={{ authStore: useAuthStore }} />
+    <LoadingProvider>
+      <RouterProvider router={router} context={{ authStore: useAuthStore }} />
+    </LoadingProvider>
   )
 }
 

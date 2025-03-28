@@ -3,9 +3,12 @@ import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useLocation, useNavigate } from '@tanstack/react-router'
+import { signIn } from '@/services/AuthProvider/utils'
+import { t } from 'i18next'
+import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
-import { signIn } from '@/context/AuthProvider/utils'
+import { MessageType } from '@/utils/enums'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -20,29 +23,25 @@ import { PasswordInput } from '@/components/password-input'
 
 type UserAuthFormProps = {
   className?: string
-  onAuthError?: (error: string) => void
+  onAuthMessage?: (message: string, type: MessageType) => void
 } & HTMLAttributes<HTMLDivElement>
 
 const formSchema = z.object({
   email: z
     .string()
-    .min(1, { message: 'Please enter your email' })
-    .email({ message: 'Invalid email address' }),
-  password: z
-    .string()
-    .min(1, {
-      message: 'Please enter your password',
-    })
-    .min(7, {
-      message: 'Password must be at least 7 characters long',
-    }),
+    .min(1, { message: t('Please enter your email') })
+    .email({ message: t('Invalid email address') }),
+  password: z.string().min(1, {
+    message: t('Please enter your password'),
+  }),
 })
 
 export function UserAuthForm({
-  onAuthError,
+  onAuthMessage,
   className,
   ...props
 }: UserAuthFormProps) {
+  const { t, i18n } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
 
   const navigate = useNavigate()
@@ -57,20 +56,22 @@ export function UserAuthForm({
     },
   })
 
-  const setUser = useAuthStore((state) => state.auth.setUser)
+  const { setUser, setAccessToken, setRefreshToken } = useAuthStore(
+    (state) => state.auth
+  )
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     try {
       setIsLoading(true)
       const response = await signIn(data.email, data.password)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const payload = { token: response.token }
+
       setUser({
-        accountNo: '1',
-        email: 'email@email.com',
-        exp: Math.round(Date.now() / 1000) + 40 * 60,
+        userId: response.userId,
+        email: response.userEmail,
         role: ['admin'],
       })
+      setAccessToken(response.accessToken)
+      setRefreshToken(response.refreshToken)
 
       navigate({
         to: from,
@@ -80,23 +81,15 @@ export function UserAuthForm({
       setTimeout(() => {
         setIsLoading(false)
       }, 3000)
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error)
-
+    } catch (error: Error | unknown) {
       setIsLoading(false)
 
-      onAuthError?.('Invalid email or password')
-
-      form.setError('email', {
-        type: 'manual',
-        message: 'Invalid email or password',
-      })
-
-      form.setError('password', {
-        type: 'manual',
-        message: 'Invalid email or password',
-      })
+      onAuthMessage?.(
+        error instanceof Error
+          ? error.message
+          : t('An error occurred. Please try again later.'),
+        MessageType.Error
+      )
     }
   }
 

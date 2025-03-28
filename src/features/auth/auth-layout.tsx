@@ -1,22 +1,31 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
+import { MessageType } from '@/utils/enums'
 import { SonnerToaster } from '@/components/ui/sonner-toaster'
 
 interface Props {
-  children: (props: { handleError: (error: string) => void }) => React.ReactNode
+  children: (props: {
+    handleToastMessage: (message: string, type: MessageType) => void
+  }) => React.ReactNode
 }
 
 export default function AuthLayout({ children }: Props) {
   const [message, setMessage] = useState<string | null>(null)
+  const { t, i18n } = useTranslation()
 
-  const handleError = async (error: string) => {
-    if (error) {
-      setMessage(error)
-    } else {
-      setMessage('An error occurred')
+  const handleMessage = async (message: string, type: MessageType) => {
+    if (message) {
+      setMessage(t(message))
     }
 
-    toast.error(message)
+    if (type === MessageType.Success) {
+      toast.success(message)
+    } else if (type === MessageType.Error) {
+      toast.error(message)
+    } else if (type === MessageType.Warning) {
+      toast.warning(message)
+    }
   }
 
   return (
@@ -37,9 +46,9 @@ export default function AuthLayout({ children }: Props) {
           </svg>
           <h1 className='text-xl font-medium'>Rodan</h1>
         </div>
-        {children({ handleError })}
+        {children({ handleToastMessage: handleMessage })}
       </div>
-      <SonnerToaster richColors duration={5000} />
+      <SonnerToaster richColors duration={5000} expand />
     </div>
   )
 }

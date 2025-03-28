@@ -1,4 +1,8 @@
-import { Link } from '@tanstack/react-router'
+import { useState } from 'react'
+import { Link, useLocation, useNavigate } from '@tanstack/react-router'
+import { logout } from '@/services/AuthProvider/utils'
+import { useAuthStore } from '@/stores/authStore'
+import { useLoading } from '@/context/loading-context'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -13,11 +17,36 @@ import {
 } from '@/components/ui/dropdown-menu'
 
 export function ProfileDropdown() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function signOut(event: any): void {
+  const auth = useAuthStore((state) => state.auth)
 
-    // eslint-disable-next-line no-console
-    console.log(event)
+  const navigate = useNavigate()
+  const location = useLocation() as { search: { from: string } }
+  const { setIsLoading } = useLoading()
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async function signOut(event: any): Promise<void> {
+    event.preventDefault()
+    setIsLoading(true)
+    try {
+      if (auth.user?.userId) {
+        const reponse = await logout(auth.user.userId)
+
+        if (reponse) {
+          auth.reset()
+        }
+
+        setIsLoading(false)
+
+        navigate({
+          to: '/sign-in',
+          search: { from: location.search.from || '/' },
+        })
+      }
+    } catch (error: Error | unknown) {
+      console.error(error)
+    }
+
+    setTimeout(() => {}, 3000)
   }
 
   return (

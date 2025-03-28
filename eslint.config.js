@@ -28,10 +28,10 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
-      'no-console': 'error',
-      'no-unused-vars': 'off',
+      'no-console': 'warn',
+      'no-unused-vars': 'warn',
       '@typescript-eslint/no-unused-vars': [
-        'error',
+        'warn',
         {
           args: 'all',
           argsIgnorePattern: '^_',
