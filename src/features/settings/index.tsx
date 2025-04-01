@@ -6,6 +6,8 @@ import {
   IconTool,
   IconUser,
 } from '@tabler/icons-react'
+import { t as translate } from 'i18next'
+import { useTranslation } from 'react-i18next'
 import { Separator } from '@/components/ui/separator'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
@@ -15,6 +17,7 @@ import { ThemeSwitch } from '@/components/theme-switch'
 import SidebarNav from './components/sidebar-nav'
 
 export default function Settings() {
+  const { t, i18n } = useTranslation()
   return (
     <>
       {/* ===== Top Heading ===== */}
@@ -29,10 +32,10 @@ export default function Settings() {
       <Main fixed>
         <div className='space-y-0.5'>
           <h1 className='text-2xl font-bold tracking-tight md:text-3xl'>
-            Settings
+            {t('Settings')}
           </h1>
           <p className='text-muted-foreground'>
-            Manage your account settings and set e-mail preferences.
+            {t('Manage your account settings and set e-mail preferences.')}
           </p>
         </div>
         <Separator className='my-4 lg:my-6' />
@@ -51,27 +54,27 @@ export default function Settings() {
 
 const sidebarNavItems = [
   {
-    title: 'Profile',
+    title: translate('Profile'),
     icon: <IconUser size={18} />,
     href: '/settings',
   },
   {
-    title: 'Account',
+    title: translate('Account'),
     icon: <IconTool size={18} />,
     href: '/settings/account',
   },
   {
-    title: 'Appearance',
+    title: translate('Appearance'),
     icon: <IconPalette size={18} />,
     href: '/settings/appearance',
   },
   {
-    title: 'Notifications',
+    title: translate('Notifications'),
     icon: <IconNotification size={18} />,
     href: '/settings/notifications',
   },
   {
-    title: 'Display',
+    title: translate('Display'),
     icon: <IconBrowserCheck size={18} />,
     href: '/settings/display',
   },

@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import { ChevronDownIcon } from '@radix-ui/react-icons'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { fonts } from '@/config/fonts'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { useFont } from '@/context/font-context'
 import { useTheme } from '@/context/theme-context'
@@ -34,6 +35,7 @@ type AppearanceFormValues = z.infer<typeof appearanceFormSchema>
 export function AppearanceForm() {
   const { font, setFont } = useFont()
   const { theme, setTheme } = useTheme()
+  const { t } = useTranslation()
 
   // This can come from your database or API.
   const defaultValues: Partial<AppearanceFormValues> = {
@@ -88,7 +90,7 @@ export function AppearanceForm() {
                 <ChevronDownIcon className='absolute right-3 top-2.5 h-4 w-4 opacity-50' />
               </div>
               <FormDescription className='font-manrope'>
-                Set the font you want to use in the dashboard.
+                {t('Set the font you want to use in the dashboard.')}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -99,9 +101,9 @@ export function AppearanceForm() {
           name='theme'
           render={({ field }) => (
             <FormItem className='space-y-1'>
-              <FormLabel>Theme</FormLabel>
+              <FormLabel>{t('Theme')}</FormLabel>
               <FormDescription>
-                Select the theme for the dashboard.
+                {t('Select the theme for the dashboard.')}
               </FormDescription>
               <FormMessage />
               <RadioGroup
@@ -166,7 +168,7 @@ export function AppearanceForm() {
           )}
         />
 
-        <Button type='submit'>Update preferences</Button>
+        <Button type='submit'>{t('Update preferences')}</Button>
       </form>
     </Form>
   )

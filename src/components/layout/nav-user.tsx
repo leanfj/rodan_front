@@ -1,4 +1,6 @@
-import { Link } from '@tanstack/react-router'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Link, useLocation, useNavigate } from '@tanstack/react-router'
+import { logout } from '@/services/AuthProvider/utils'
 import {
   BadgeCheck,
   Bell,
@@ -7,6 +9,9 @@ import {
   LogOut,
   Sparkles,
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import { useAuthStore } from '@/stores/authStore'
+import { useLoading } from '@/context/loading-context'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
@@ -34,6 +39,37 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const auth = useAuthStore((state) => state.auth)
+  const { t } = useTranslation()
+
+  const navigate = useNavigate()
+  const location = useLocation() as { search: { from: string } }
+  const { setIsLoading } = useLoading()
+
+  async function signOut(event: any): Promise<void> {
+    event.preventDefault()
+    setIsLoading(true)
+    try {
+      if (auth.user?.userId) {
+        const reponse = await logout(auth.user.userId)
+
+        if (reponse) {
+          auth.reset()
+        }
+
+        setIsLoading(false)
+
+        navigate({
+          to: '/sign-in',
+          search: { from: location.search.from || '/' },
+        })
+      }
+    } catch (error: Error | unknown) {
+      console.error(error)
+    }
+
+    setTimeout(() => {}, 3000)
+  }
 
   return (
     <SidebarMenu>
@@ -73,38 +109,38 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            {/*             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <Sparkles />
                 Upgrade to Pro
               </DropdownMenuItem>
-            </DropdownMenuGroup>
+            </DropdownMenuGroup> */}
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
+              {/*               <DropdownMenuItem asChild>
                 <Link to='/settings/account'>
                   <BadgeCheck />
                   Account
                 </Link>
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               <DropdownMenuItem asChild>
                 <Link to='/settings'>
                   <CreditCard />
-                  Billing
+                  {t('Settings')}
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
+              {/*  <DropdownMenuItem asChild>
                 <Link to='/settings/notifications'>
                   <Bell />
                   Notifications
                 </Link>
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={signOut}>
               <LogOut />
-              Log out
+              {t('Log out')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

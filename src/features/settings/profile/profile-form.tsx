@@ -1,10 +1,13 @@
+import { useEffect, useState } from 'react'
 import { z } from 'zod'
-import { useFieldArray, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Link } from '@tanstack/react-router'
-import { cn } from '@/lib/utils'
+import { t as translate } from 'i18next'
+import { useTranslation } from 'react-i18next'
+import { useAuthStore } from '@/stores/authStore'
 import { toast } from '@/hooks/use-toast'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Form,
   FormControl,
@@ -15,65 +18,86 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
 
 const profileFormSchema = z.object({
-  username: z
+  userName: z
     .string()
     .min(2, {
-      message: 'Username must be at least 2 characters.',
+      message: translate('Username must be at least 2 characters.'),
     })
     .max(30, {
-      message: 'Username must not be longer than 30 characters.',
+      message: translate('Username must not be longer than 30 characters.'),
     }),
   email: z
     .string({
-      required_error: 'Please select an email to display.',
+      required_error: translate('Please select an email to display.'),
     })
     .email(),
-  bio: z.string().max(160).min(4),
-  urls: z
-    .array(
-      z.object({
-        value: z.string().url({ message: 'Please enter a valid URL.' }),
-      })
-    )
-    .optional(),
+  role: z.array(z.string()).min(1, {
+    message: translate('Please select at least one role.'),
+  }),
 })
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>
 
-// This can come from your database or API.
+export interface User {
+  userId: number
+  email: string
+  role: string[]
+  userName: string
+  login: string
+}
+
 const defaultValues: Partial<ProfileFormValues> = {
-  bio: 'I own a computer.',
-  urls: [
-    { value: 'https://shadcn.com' },
-    { value: 'http://twitter.com/shadcn' },
-  ],
+  userName: '',
+  email: '',
+  role: ['admin', 'user'],
 }
 
 export default function ProfileForm() {
+  const { t } = useTranslation()
+  const auth = useAuthStore((state) => state.auth)
+  const [roles, setRoles] = useState<string[]>([''])
+  const [user, setUser] = useState<User>({
+    userId: 0,
+    email: '',
+    role: [],
+    userName: '',
+    login: '',
+  })
+
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues,
     mode: 'onChange',
   })
 
-  const { fields, append } = useFieldArray({
-    name: 'urls',
-    control: form.control,
-  })
+  useEffect(() => {
+    setUser({
+      userId: auth.user?.userId || 0,
+      email: auth.user?.email || '',
+      role: auth.user?.role || [],
+      userName: auth.user?.userName || '',
+      login: auth.user?.login || '',
+    })
+
+    form.reset({
+      userName: auth.user?.userName || '',
+      email: auth.user?.email || '',
+      role: auth.user?.role || [],
+    })
+
+    const fetchRoles = async () => {
+      const fetchedRoles = ['administrador', 'usuario', 'editor']
+      setRoles(fetchedRoles)
+    }
+
+    fetchRoles()
+  }, [])
 
   function onSubmit(data: ProfileFormValues) {
     toast({
-      title: 'You submitted the following values:',
+      title: t('You submitted the following values:'),
       description: (
         <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
           <code className='text-white'>{JSON.stringify(data, null, 2)}</code>
@@ -87,16 +111,18 @@ export default function ProfileForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
         <FormField
           control={form.control}
-          name='username'
+          name='userName'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder='shadcn' {...field} />
+                <Input placeholder={t('User Name')} {...field} />
               </FormControl>
               <FormDescription>
-                This is your public display name. It can be your real name or a
-                pseudonym. You can only change this once every 30 days.
+                {t(
+                  'This is your public display name. It can be your real name or a'
+                )}{' '}
+                {t('pseudonym. You can only change this once every 30 days.')}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -108,21 +134,13 @@ export default function ProfileForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Email</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder='Select a verified email to display' />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value='m@example.com'>m@example.com</SelectItem>
-                  <SelectItem value='m@google.com'>m@google.com</SelectItem>
-                  <SelectItem value='m@support.com'>m@support.com</SelectItem>
-                </SelectContent>
-              </Select>
+              <FormControl>
+                <Input placeholder='Email' {...field} />
+              </FormControl>
               <FormDescription>
-                You can manage verified email addresses in your{' '}
-                <Link to='/'>email settings</Link>.
+                {t(
+                  'You can manage verified email addresses in your email settings.'
+                )}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -130,38 +148,78 @@ export default function ProfileForm() {
         />
         <FormField
           control={form.control}
+          name='role'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t('Roles')}</FormLabel>
+              <FormControl>
+                <div className='space-y-2'>
+                  {roles.map((role) => (
+                    <div key={role} className='flex items-center space-x-3'>
+                      <Checkbox
+                        id={role}
+                        checked={field.value.includes(role)}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            field.onChange([...field.value, role])
+                          } else {
+                            field.onChange(
+                              field.value.filter((value) => value !== role)
+                            )
+                          }
+                        }}
+                      />
+                      <label htmlFor={role} className='text-sm font-medium'>
+                        {role.toUpperCase()}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </FormControl>
+              <FormDescription>
+                {t('You can manage your roles in your profile settings.')}
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {/* <FormField
+          control={form.control}
           name='bio'
           render={({ field }) => (
             <FormItem>
               <FormLabel>Bio</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder='Tell us a little bit about yourself'
+                  placeholder={t('Tell us a little bit about yourself')}
                   className='resize-none'
                   {...field}
                 />
               </FormControl>
               <FormDescription>
-                You can <span>@mention</span> other users and organizations to
-                link to them.
+                {t('You can ')}
+                <span>@mention</span>
+                {t(' other users and organizations to')} {t('link to them.')}
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
-        />
-        <div>
+        /> */}
+        {/* <div>
           {fields.map((field, index) => (
             <FormField
               control={form.control}
               key={field.id}
-              name={`urls.${index}.value`}
+              name={`role.${index}`}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className={cn(index !== 0 && 'sr-only')}>
                     URLs
                   </FormLabel>
                   <FormDescription className={cn(index !== 0 && 'sr-only')}>
-                    Add links to your website, blog, or social media profiles.
+                    {t(
+                      'Add links to your website, blog, or social media profiles.'
+                    )}
                   </FormDescription>
                   <FormControl>
                     <Input {...field} />
@@ -178,10 +236,10 @@ export default function ProfileForm() {
             className='mt-2'
             onClick={() => append({ value: '' })}
           >
-            Add URL
+            {t('Add URL')}
           </Button>
-        </div>
-        <Button type='submit'>Update profile</Button>
+        </div> */}
+        <Button type='submit'>{t('Update profile')}</Button>
       </form>
     </Form>
   )

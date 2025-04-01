@@ -8,6 +8,8 @@ const USER_KEY = 'auth:user'
 interface AuthUser {
   userId: number
   email: string
+  login: string
+  userName: string
   role: string[]
 }
 

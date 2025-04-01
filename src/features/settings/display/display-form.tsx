@@ -1,6 +1,8 @@
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { t as translation } from 'i18next'
+import { useTranslation } from 'react-i18next'
 import { toast } from '@/hooks/use-toast'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -43,7 +45,7 @@ const items = [
 
 const displayFormSchema = z.object({
   items: z.array(z.string()).refine((value) => value.some((item) => item), {
-    message: 'You have to select at least one item.',
+    message: translation('You have to select at least one item.'),
   }),
 })
 
@@ -55,6 +57,7 @@ const defaultValues: Partial<DisplayFormValues> = {
 }
 
 export function DisplayForm() {
+  const { t } = useTranslation()
   const form = useForm<DisplayFormValues>({
     resolver: zodResolver(displayFormSchema),
     defaultValues,
@@ -80,9 +83,9 @@ export function DisplayForm() {
           render={() => (
             <FormItem>
               <div className='mb-4'>
-                <FormLabel className='text-base'>Sidebar</FormLabel>
+                <FormLabel className='text-base'>{t('Sidebar')}</FormLabel>
                 <FormDescription>
-                  Select the items you want to display in the sidebar.
+                  {t('Select the items you want to display in the sidebar.')}
                 </FormDescription>
               </div>
               {items.map((item) => (
@@ -111,7 +114,7 @@ export function DisplayForm() {
                           />
                         </FormControl>
                         <FormLabel className='font-normal'>
-                          {item.label}
+                          {t(item.label)}
                         </FormLabel>
                       </FormItem>
                     )
@@ -122,7 +125,7 @@ export function DisplayForm() {
             </FormItem>
           )}
         />
-        <Button type='submit'>Update display</Button>
+        <Button type='submit'>{t('Update display')}</Button>
       </form>
     </Form>
   )

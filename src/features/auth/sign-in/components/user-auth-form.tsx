@@ -66,8 +66,10 @@ export function UserAuthForm({
       const response = await signIn(data.email, data.password)
 
       setUser({
-        userId: response.userId,
-        email: response.userEmail,
+        userId: response.user.userId,
+        email: response.user.email,
+        login: response.user.login,
+        userName: response.user.userName,
         role: ['admin'],
       })
       setAccessToken(response.accessToken)

@@ -34,7 +34,7 @@ export const sidebarData: SidebarData = {
       logo: Command,
       plan: 'Vite + ShadcnUI',
     },
-    {
+    /*  {
       name: 'Acme Inc',
       logo: GalleryVerticalEnd,
       plan: 'Enterprise',
@@ -43,7 +43,7 @@ export const sidebarData: SidebarData = {
       name: 'Acme Corp.',
       logo: AudioWaveform,
       plan: 'Startup',
-    },
+    }, */
   ],
   navGroups: [
     {
@@ -77,7 +77,7 @@ export const sidebarData: SidebarData = {
         },
       ],
     },
-    {
+    /* {
       title: 'Pages',
       items: [
         {
@@ -138,7 +138,7 @@ export const sidebarData: SidebarData = {
           ],
         },
       ],
-    },
+    }, */
     {
       title: 'Other',
       items: [
@@ -173,11 +173,11 @@ export const sidebarData: SidebarData = {
             },
           ],
         },
-        {
-          title: 'Help Center',
-          url: '/help-center',
-          icon: IconHelp,
-        },
+        // {
+        //   title: 'Help Center',
+        //   url: '/help-center',
+        //   icon: IconHelp,
+        // },
       ],
     },
   ],

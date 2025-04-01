@@ -1,8 +1,19 @@
 import { AxiosError } from 'axios'
 import { Api } from '@/services/api'
-import { log } from 'console'
 
-export async function signIn(email: string, password: string) {
+export async function signIn(
+  email: string,
+  password: string
+): Promise<{
+  accessToken: string
+  refreshToken: string
+  user: {
+    userId: number
+    email: string
+    login: string
+    userName: string
+  }
+}> {
   try {
     const request = await Api.post('authentication/login', {
       email,
