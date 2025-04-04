@@ -1,0 +1,23 @@
+services:
+  rodan_web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rodan_web
+    restart: always
+    volumes:
+      - "rodan_web_data:/data"
+    networks:
+      - traefik
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.rodan_web.rule: "Host(`rodan.gigan.duckdns.org`)"
+      traefik.http.routers.rodan_web.entrypoints: "websecure"
+      traefik.http.routers.rodan_web.tls.certresolver: "myresolver"
+      traefik.http.services.rodan_web.loadbalancer.server.port: "8080"
+
+networks:
+  traefik:
+    external: true
+volumes:
+  rodan_web_data:

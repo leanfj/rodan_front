@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
@@ -11,8 +12,8 @@ interface Props {
 }
 
 export default function AuthLayout({ children }: Props) {
-  const [message, setMessage] = useState<string | null>(null)
-  const { t, i18n } = useTranslation()
+  const [, setMessage] = useState<string | null>(null)
+  const { t } = useTranslation()
 
   const handleMessage = async (message: string, type: MessageType) => {
     if (message) {

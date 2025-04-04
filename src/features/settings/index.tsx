@@ -17,7 +17,7 @@ import { ThemeSwitch } from '@/components/theme-switch'
 import SidebarNav from './components/sidebar-nav'
 
 export default function Settings() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   return (
     <>
       {/* ===== Top Heading ===== */}

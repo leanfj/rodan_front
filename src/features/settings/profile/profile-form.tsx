@@ -58,7 +58,7 @@ export default function ProfileForm() {
   const { t } = useTranslation()
   const auth = useAuthStore((state) => state.auth)
   const [roles, setRoles] = useState<string[]>([''])
-  const [user, setUser] = useState<User>({
+  const [, setUser] = useState<User>({
     userId: 0,
     email: '',
     role: [],

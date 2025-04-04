@@ -41,7 +41,7 @@ export function UserAuthForm({
   className,
   ...props
 }: UserAuthFormProps) {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
 
   const navigate = useNavigate()
@@ -70,7 +70,7 @@ export function UserAuthForm({
         email: response.user.email,
         login: response.user.login,
         userName: response.user.userName,
-        role: ['admin'],
+        role: ['administrador'],
       })
       setAccessToken(response.accessToken)
       setRefreshToken(response.refreshToken)

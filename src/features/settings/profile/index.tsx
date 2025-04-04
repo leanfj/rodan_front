@@ -3,7 +3,7 @@ import ContentSection from '../components/content-section'
 import ProfileForm from './profile-form'
 
 export default function SettingsProfile() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   return (
     <ContentSection

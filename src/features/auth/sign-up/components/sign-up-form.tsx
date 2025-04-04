@@ -2,7 +2,7 @@ import { HTMLAttributes, useState } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useLocation, useNavigate } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { signUp } from '@/services/AuthProvider/utils'
 import { t } from 'i18next'
 import { cn } from '@/lib/utils'
@@ -53,8 +53,6 @@ export function SignUpForm({
   const [isLoading, setIsLoading] = useState(false)
 
   const navigate = useNavigate()
-  const location = useLocation() as { search: { from: string } }
-  const from = location.search.from || '/'
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
