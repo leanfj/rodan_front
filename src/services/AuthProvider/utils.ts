@@ -12,6 +12,7 @@ export async function signIn(
     email: string
     login: string
     userName: string
+    roles: string[]
   }
 }> {
   try {

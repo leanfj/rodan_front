@@ -1,0 +1,26 @@
+services:
+  rodan_web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rodan_web_dev
+    restart: always
+    ports:
+      - "8080:8080" # <-- Libera a porta localmente se quiser
+    volumes:
+      - "rodan_web_data_dev:/data"
+    networks:
+      - traefik-dev
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.frontend.rule: "Host(`localhost`)"
+      traefik.http.routers.frontend.entrypoints: "web"
+      traefik.http.services.frontend.loadbalancer.server.port: "5173"
+
+networks:
+  traefik-dev:
+    external: false
+    driver: bridge
+
+volumes:
+  rodan_web_data_dev:

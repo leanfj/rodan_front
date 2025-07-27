@@ -3,6 +3,7 @@ import { Link, useLocation } from '@tanstack/react-router'
 import { t as translate } from 'i18next'
 import { ChevronRight } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { useAuthExtensions } from '@/stores/authStore.extensions'
 import {
   Collapsible,
   CollapsibleContent,
@@ -34,6 +35,8 @@ export function NavGroup({ title, items }: NavGroup) {
   const { state } = useSidebar()
   const { t } = useTranslation()
   const href = useLocation({ select: (location) => location.href })
+  const { hasPermission } = useAuthExtensions()
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>{t(title)}</SidebarGroupLabel>
@@ -41,13 +44,15 @@ export function NavGroup({ title, items }: NavGroup) {
         {items.map((item) => {
           const key = `${item.title}-${item.url}`
 
-          if (!item.items)
+          if (!item.items) {
             return <SidebarMenuLink key={key} item={item} href={href} />
+          }
 
-          if (state === 'collapsed')
+          if (state === 'collapsed') {
             return (
               <SidebarMenuCollapsedDropdown key={key} item={item} href={href} />
             )
+          }
 
           return <SidebarMenuCollapsible key={key} item={item} href={href} />
         })}
