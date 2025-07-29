@@ -11,7 +11,7 @@ services:
       - traefik
     labels:
       traefik.enable: "true"
-      traefik.http.routers.rodan_web.rule: "Host(`rodan.lfwebinnovations.com.br`)"
+      traefik.http.routers.rodan_web.rule: "Host(`rodan-app.lfwebinnovations.com.br`)"
       traefik.http.routers.rodan_web.entrypoints: "websecure"
       traefik.http.routers.rodan_web.tls.certresolver: "myresolver"
       traefik.http.services.rodan_web.loadbalancer.server.port: "8080"
