@@ -3,7 +3,6 @@ import { Link, useLocation } from '@tanstack/react-router'
 import { t as translate } from 'i18next'
 import { ChevronRight } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { useAuthExtensions } from '@/stores/authStore.extensions'
 import {
   Collapsible,
   CollapsibleContent,
@@ -29,13 +28,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
+// eslint-disable-next-line no-unused-vars
 import { NavCollapsible, NavItem, NavLink, type NavGroup } from './types'
 
 export function NavGroup({ title, items }: NavGroup) {
   const { state } = useSidebar()
   const { t } = useTranslation()
   const href = useLocation({ select: (location) => location.href })
-  const { hasPermission } = useAuthExtensions()
 
   return (
     <SidebarGroup>
