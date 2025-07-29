@@ -76,7 +76,7 @@ export default function ProfileForm() {
     setUser({
       userId: auth.user?.userId || 0,
       email: auth.user?.email || '',
-      role: auth.user?.role || [],
+      role: auth.user?.roles || [],
       userName: auth.user?.userName || '',
       login: auth.user?.login || '',
     })
@@ -84,7 +84,7 @@ export default function ProfileForm() {
     form.reset({
       userName: auth.user?.userName || '',
       email: auth.user?.email || '',
-      role: auth.user?.role || [],
+      role: auth.user?.roles || [],
     })
 
     const fetchRoles = async () => {
