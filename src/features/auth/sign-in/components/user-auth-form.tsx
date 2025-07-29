@@ -70,7 +70,7 @@ export function UserAuthForm({
         email: response.user.email,
         login: response.user.login,
         userName: response.user.userName,
-        role: ['administrador'],
+        roles: response.user.roles,
       })
       setAccessToken(response.accessToken)
       setRefreshToken(response.refreshToken)

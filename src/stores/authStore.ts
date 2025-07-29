@@ -10,7 +10,7 @@ interface AuthUser {
   email: string
   login: string
   userName: string
-  role: string[]
+  roles: string[]
 }
 
 interface AuthState {

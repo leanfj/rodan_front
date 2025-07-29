@@ -47,7 +47,7 @@ export function ProfileDropdown() {
     setUser({
       userId: auth.user?.userId || 0,
       email: auth.user?.email || '',
-      role: auth.user?.role || [],
+      role: auth.user?.roles || [],
       userName: auth.user?.userName || '',
       login: auth.user?.login || '',
     })

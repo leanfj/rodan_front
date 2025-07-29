@@ -28,12 +28,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
+// eslint-disable-next-line no-unused-vars
 import { NavCollapsible, NavItem, NavLink, type NavGroup } from './types'
 
 export function NavGroup({ title, items }: NavGroup) {
   const { state } = useSidebar()
   const { t } = useTranslation()
   const href = useLocation({ select: (location) => location.href })
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>{t(title)}</SidebarGroupLabel>
@@ -41,13 +43,15 @@ export function NavGroup({ title, items }: NavGroup) {
         {items.map((item) => {
           const key = `${item.title}-${item.url}`
 
-          if (!item.items)
+          if (!item.items) {
             return <SidebarMenuLink key={key} item={item} href={href} />
+          }
 
-          if (state === 'collapsed')
+          if (state === 'collapsed') {
             return (
               <SidebarMenuCollapsedDropdown key={key} item={item} href={href} />
             )
+          }
 
           return <SidebarMenuCollapsible key={key} item={item} href={href} />
         })}
