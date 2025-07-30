@@ -1,24 +1,31 @@
-FROM node:18-alpine AS base
+# Etapa 1: Build com PNPM
+FROM node:18-alpine AS build
+
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
-FROM base AS build
 WORKDIR /app
-COPY . .
+
 COPY package.json pnpm-lock.yaml ./
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-ENV NODE_ENV=production
+
+COPY . .
+
 RUN pnpm run build
 
-FROM base AS dokploy
-WORKDIR /app
-ENV NODE_ENV=production
+# Etapa 2: Servir com NGINX
+FROM nginx:alpine AS deploy
 
-# Copy only the necessary files
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/package.json ./package.json
-COPY --from=build /app/node_modules ./node_modules
+# Remove os arquivos padrão do NGINX
+RUN rm -rf /usr/share/nginx/html/*
 
-EXPOSE 3000
-CMD ["pnpm", "start"]
+# Copia os arquivos estáticos gerados no build para o NGINX
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# Copia configuração customizada do NGINX para tratar SPA
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
