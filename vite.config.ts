@@ -15,4 +15,7 @@ export default defineConfig({
       '@tabler/icons-react': '@tabler/icons-react/dist/esm/icons/index.mjs',
     },
   },
+  server: {
+    allowedHosts: ['https://app.lfwebinnovations.com.br'],
+  },
 })
