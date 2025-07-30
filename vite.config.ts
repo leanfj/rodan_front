@@ -16,6 +16,6 @@ export default defineConfig({
     },
   },
   server: {
-    allowedHosts: ['https://app.lfwebinnovations.com.br'],
+    allowedHosts: ['app.lfwebinnovations.com.br'],
   },
 })
