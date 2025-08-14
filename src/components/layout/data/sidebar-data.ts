@@ -140,6 +140,22 @@ export const sidebarData: SidebarData = {
       ],
     },
     {
+      title: 'Administração',
+      items: [
+        {
+          title: 'Cadastros',
+          icon: IconSettings,
+          items: [
+            {
+              title: 'Tipologias',
+              url: '/tipologias',
+              icon: IconUsers,
+            },
+          ],
+        },
+      ],
+    },
+    {
       title: 'Other',
       items: [
         {
