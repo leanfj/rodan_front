@@ -140,7 +140,7 @@ export const sidebarData: SidebarData = {
       ],
     },
     {
-      title: 'Administração',
+      title: 'Administration',
       items: [
         {
           title: 'Cadastros',

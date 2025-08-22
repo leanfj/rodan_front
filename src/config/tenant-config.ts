@@ -30,7 +30,7 @@ export interface TenantConfig {
       enableTasks?: boolean
       enableUsers?: boolean
       enableApps?: boolean
-      enableAdministracao?: boolean
+      enableAdministration?: boolean
     }
   }
   roleOverrides?: Partial<Record<string, Partial<RoleConfig>>>
@@ -39,12 +39,12 @@ export interface TenantConfig {
 // Configurações de Role (nível de acesso dentro da organização)
 export const roleConfigs: Record<string, RoleConfig> = {
   admin: {
-    allowedNavGroups: ['General', 'Pages', 'Other', 'Administração'],
+    allowedNavGroups: ['General', 'Pages', 'Other', 'Administration'],
     allowedMenuItems: {
       General: ['Dashboard', 'Tasks', 'Apps', 'Chats', 'Users'],
       Pages: ['Auth', 'Errors'],
       Other: ['Settings', 'Help Center'],
-      ['Administração']: ['Cadastros'],
+      Administration: ['Cadastros'],
     },
     permissions: ['read', 'write', 'delete', 'admin', 'manage_users'],
     canAccessAdmin: true,
@@ -110,7 +110,7 @@ export const tenantConfigs: Record<string, TenantConfig> = {
         enableTasks: true,
         enableUsers: true,
         enableApps: true,
-        enableAdministracao: true,
+        enableAdministration: true,
       },
     },
   },
@@ -137,7 +137,7 @@ export const tenantConfigs: Record<string, TenantConfig> = {
         enableTasks: true,
         enableUsers: false,
         enableApps: true,
-        enableAdministracao: true,
+        enableAdministration: true,
       },
     },
     // Override para este tenant: users não podem ver Apps
@@ -168,7 +168,7 @@ export const tenantConfigs: Record<string, TenantConfig> = {
         enableTasks: true,
         enableUsers: true,
         enableApps: true,
-        enableAdministracao: true,
+        enableAdministration: true,
       },
     },
   },
@@ -232,8 +232,8 @@ export function filterMenusByTenantFeatures(
         return features.enableUsers !== false
       case 'Apps':
         return features.enableApps !== false
-      case 'Administração':
-        return features.enableAdministracao !== false
+      case 'Administration':
+        return features.enableAdministration !== false
       default:
         return true
     }

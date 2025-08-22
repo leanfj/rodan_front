@@ -109,5 +109,22 @@
   "User Name": "Nome de Usuário",
   "You can manage verified email addresses in your email settings.": "Você pode gerenciar endereços de e-mail verificados em suas configurações de e-mail.",
   "You can manage your roles in your profile settings.": "Você pode gerenciar seus papéis em suas configurações de perfil.",
-  "Roles": "Funcões"
+  "Roles": "Funções",
+  "Identificação is required.": "Identificação é obrigatória.",
+  "Descrição is required.": "Descrição é obrigatória.",
+  "Save changes": "Salvar alterações",
+  "Filter tipologia...": "Filtrar tipologia...",
+  "View": "Visualizar",
+  "Toggle columns": "Alternar colunas",
+  "Open menu": "Abrir menu",
+  "Edit": "Editar",
+  "Delete": "Excluir",
+  "The following register has been deleted:": "O seguinte registro foi excluído:",
+  "Delete Tipologia": "Excluir Tipologia",
+  "Are you sure you want to delete": "Você tem certeza de que deseja excluir",
+  "from the system. This cannot be undone.": "do sistema. Isso não pode ser desfeito.",
+  "Warning!": "Atenção!",
+  "Cancel": "Cancelar",
+  "Continue": "Continuar",
+  "Please be careful, this operation cannot be rolled back.": "Por favor, tenha cuidado, esta operação não pode ser desfeita."
 }
