@@ -46,7 +46,6 @@ export class TipologiasService {
     if (filters?.sortOrder) params.append('sortOrder', filters.sortOrder)
 
     const response = await Api.get(`${this.baseUrl}?${params}`)
-
     // Valida a resposta com Zod
     const validatedData = tipologiaListSchema.parse(
       response.data.data || response.data

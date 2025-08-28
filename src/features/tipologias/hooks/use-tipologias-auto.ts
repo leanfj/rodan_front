@@ -21,7 +21,7 @@ export function useTipologiasAuto(filters?: TipologiasFilters) {
   const prodQuery = useTipologias(filters)
   const devQuery = useTipologiasDev()
 
-  return isDev ? devQuery : prodQuery
+  return prodQuery
 }
 
 // Hook para criar tipologia (auto-switch)

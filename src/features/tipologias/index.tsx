@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { toast } from '@/hooks/use-toast'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
@@ -31,6 +31,19 @@ export default function Tipologias() {
     error,
   } = useTipologiasAuto(filters)
 
+  // Tratamento de erro usando useEffect para evitar setState durante render
+  useEffect(() => {
+    if (isError && error) {
+      toast({
+        title: 'Erro ao carregar tipologias',
+        description:
+          (error?.response?.data as any)?.message ||
+          'Ocorreu um erro inesperado',
+        variant: 'destructive',
+      })
+    }
+  }, [isError, error])
+
   // Função para atualizar filtros (para uso futuro com paginação)
   // const handleFiltersChange = (newFilters: Partial<TipologiasFilters>) => {
   //   setFilters((prev) => ({ ...prev, ...newFilters }))
@@ -40,14 +53,6 @@ export default function Tipologias() {
   // const handleSearch = (search: string) => {
   //   handleFiltersChange({ search, page: 1 })
   // }
-
-  if (isError) {
-    toast({
-      title: 'Erro ao carregar tipologias',
-      description: error?.message || 'Ocorreu um erro inesperado',
-      variant: 'destructive',
-    })
-  }
 
   return (
     <TipologiasProvider>
